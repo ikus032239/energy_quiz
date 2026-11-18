@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>電気クイズ | 理科トレーニング</title>
+<style>
+:root{--bg:#0b1220;--panel:#131f32;--panel2:#1a2940;--line:#2b3b55;--text:#edf4ff;--muted:#9aacc5;--cyan:#4de0dc;--blue:#70a7ff;--green:#55d69e;--red:#ff7185;--gold:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#17304c 0,transparent 38%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;color:inherit}
+.app{max-width:1200px;margin:auto;padding:22px 20px 38px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#45e0d5,#438cff);display:grid;place-items:center;color:#071523;font-size:27px;box-shadow:0 8px 25px #36c9d344}
+h1{font-size:clamp(20px,3vw,28px);margin:0;letter-spacing:.03em}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+.header-pill{border:1px solid var(--line);background:#152238;border-radius:99px;padding:8px 13px;color:#b8c9df;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:18px;align-items:start}
+.main,.side{background:linear-gradient(160deg,#152238,#101a2b);border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 50px #0003}
+.main{padding:22px;min-height:630px}.side{padding:18px;position:sticky;top:14px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{font-size:12px;padding:7px 11px;border-radius:99px;background:#243650;color:#c6d7ee;border:1px solid #344a68}
+.chip.level{color:var(--cyan);border-color:#277d83;background:#12353c}
+.progress{height:7px;background:#26364d;border-radius:99px;margin:17px 0 22px;overflow:hidden}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue));transition:width .25s}
+.stats{display:flex;gap:18px;color:var(--muted);font-size:12px}.stats b{color:var(--text);font-size:15px;margin-left:4px}
+.question-area{padding:25px 22px;background:linear-gradient(135deg,#1a2c45,#17263b);border:1px solid #314660;border-radius:18px;min-height:205px;display:flex;flex-direction:column;justify-content:center}
+.q-label{font-size:11px;color:var(--cyan);letter-spacing:.16em;font-weight:800}.question{font-size:clamp(19px,2.6vw,27px);line-height:1.65;font-weight:750;margin:12px 0 0;white-space:pre-wrap}
+.hint{font-size:13px;color:var(--muted);margin-top:12px}
+.answer-title{font-size:13px;color:var(--muted);margin:22px 0 9px}
+.answer-box{display:flex;gap:9px}.answer-box input{min-width:0;flex:1;background:#0d1727;border:1px solid #3a4e6a;border-radius:12px;padding:14px 15px;color:white;outline:none;font-size:17px}.answer-box input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #4de0dc22}
+.primary,.secondary,.choice{border:0;border-radius:12px;padding:12px 17px;font-weight:750;transition:.15s}
+.primary{background:linear-gradient(135deg,#45ded4,#5b9fff);color:#071523;min-width:112px}.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.secondary{background:#263851;border:1px solid #405675;color:#d8e6f7}.secondary:hover{background:#304764}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.choice{text-align:left;background:#1b2b42;border:1px solid #354b67;padding:14px;color:#e8f1fc}.choice:hover{border-color:var(--cyan);background:#203b50}
+.feedback{margin-top:16px;border-radius:13px;padding:14px 16px;display:none;line-height:1.6;font-size:14px}.feedback.show{display:block}.feedback.ok{background:#12372f;border:1px solid #27795e}.feedback.ng{background:#3b202c;border:1px solid #8a3d54}.feedback strong{display:block;font-size:16px;margin-bottom:4px}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.note{font-size:11px;color:#8094af}
+.start-screen{text-align:center;padding:38px 10px}.start-icon{font-size:54px;margin-bottom:12px}.start-screen h2{font-size:26px;margin:0 0 8px}.start-screen p{color:var(--muted);line-height:1.8;max-width:600px;margin:0 auto 22px}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin:22px auto;max-width:760px}.setup-group{background:#14243a;border:1px solid #30445f;border-radius:14px;padding:13px}.setup-label{font-size:12px;color:var(--cyan);font-weight:800;margin-bottom:10px}.option-row{display:flex;gap:7px;flex-wrap:wrap}.option-btn{flex:1 1 auto;min-width:70px;background:#1b2b42;border:1px solid #354b67;color:#dce9f8;border-radius:9px;padding:10px 9px;font-size:13px;font-weight:700}.option-btn.active{background:#12383d;border-color:var(--cyan);color:#8df5eb;box-shadow:inset 0 0 0 1px #4de0dc44}.setup-help{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.timer-chip{border-color:#8a6632;background:#382d1b;color:#ffd98b}.timer-chip.urgent{border-color:#a84254;background:#3c202a;color:#ff9bab}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:22px 0}.level-btn{background:#192a40;border:1px solid #344a66;border-radius:13px;padding:13px 8px;color:#dce9f8}.level-btn b{display:block;font-size:14px}.level-btn small{font-size:10px;color:var(--muted)}.level-btn.active{border-color:var(--cyan);background:#12353b;box-shadow:inset 0 0 0 1px #4de0dc55}
+.side h3{font-size:15px;margin:0 0 13px}.calc-display{background:#0a1423;border:1px solid #33445e;border-radius:12px;padding:12px;text-align:right;margin-bottom:11px;min-height:67px}.calc-expression{color:#8298b5;font-size:12px;min-height:18px;overflow:hidden}.calc-value{font-size:25px;font-weight:750;overflow:hidden;text-overflow:ellipsis}
+.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.key{border:1px solid #344a66;background:#1c2c43;border-radius:9px;padding:12px 4px;font-weight:700}.key:hover{background:#2a405e}.key.op{color:var(--cyan)}.key.equal{background:#276b73;border-color:#368e93;color:white}.key.wide{grid-column:span 2}
+.calc-foot{font-size:11px;color:#8398b3;line-height:1.6;margin-top:11px}
+.side-stats{border-top:1px solid var(--line);margin-top:18px;padding-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini-stat{background:#19283d;border-radius:10px;padding:10px}.mini-stat small{display:block;color:var(--muted);font-size:10px}.mini-stat b{font-size:19px}
+.hidden{display:none!important}
+.modal-bg{position:fixed;inset:0;background:#050a12cc;display:none;place-items:center;padding:18px;z-index:5}.modal-bg.show{display:grid}.modal{max-width:460px;width:100%;background:#152238;border:1px solid #405675;border-radius:20px;padding:24px;text-align:center}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);line-height:1.7}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.side{position:static;order:2}.side .calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}.side-stats{margin-top:0}.main{min-height:0}}
+@media(max-width:560px){.setup-grid{grid-template-columns:1fr}.option-btn{min-width:62px;padding:10px 7px}.app{padding:14px 11px 25px}.main{padding:15px;border-radius:17px}.side{padding:14px}.question-area{padding:18px 15px;min-height:170px}.levels{grid-template-columns:1fr 1fr}.answer-box{flex-wrap:wrap}.answer-box input{flex-basis:100%}.answer-box button{flex:1}.choices{grid-template-columns:1fr}.stats{gap:10px}.side .calc-layout{grid-template-columns:1fr}.header-pill{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">ϟ</div><div><h1>電気クイズ</h1><div class="sub">中学理科・電流と回路のトレーニング</div></div></div>
+ <div class="header-pill">SCIENCE TRAINING / PHYSICS</div>
+</header>
+<div class="layout">
+<section class="main">
+ <div id="startScreen" class="start-screen">
+  <div class="start-icon">⚡</div><h2>電気のしくみを攻略しよう</h2>
+  <p>用語・回路・公式・計算問題に挑戦！<br>問題の内容は共通で、難易度によって解答方法が変わります。</p>
+  <div class="setup-grid">
+   <div class="setup-group"><div class="setup-label">① 問題の種類</div><div class="option-row" id="typeSelect">
+    <button class="option-btn active" data-type="基礎問題">基礎問題</button><button class="option-btn" data-type="応用問題">応用問題</button><button class="option-btn" data-type="両方">両方</button><button class="option-btn" data-type="計算">計算</button><button class="option-btn" data-type="重要">重要</button>
+   </div></div>
+   <div class="setup-group"><div class="setup-label">② 難易度</div><div class="option-row" id="difficultySelect">
+    <button class="option-btn active" data-difficulty="ノーマル">ノーマル（4択）</button><button class="option-btn" data-difficulty="ハード">ハード（入力）</button>
+   </div></div>
+   <div class="setup-group"><div class="setup-label">③ ゲームモード</div><div class="option-row" id="modeSelect">
+    <button class="option-btn active" data-mode="ノーマル">ノーマル</button><button class="option-btn" data-mode="サバイバル">サバイバル</button><button class="option-btn" data-mode="タイムアタック">タイムアタック</button>
+   </div><div class="setup-help" id="modeHelp">自分のペースで全問に挑戦。</div></div>
+   <div class="setup-group"><div class="setup-label">④ 問題数</div><div class="option-row" id="countSelect">
+    <button class="option-btn active" data-count="10">10問</button><button class="option-btn" data-count="20">20問</button><button class="option-btn" data-count="all">全問</button>
+   </div></div>
+  </div>
+  <button class="primary" id="startBtn">ゲーム開始　→</button>
+ </div>
+ <div id="gameScreen" class="hidden">
+  <div class="topline"><div><span class="chip level" id="levelChip">初級</span> <span class="chip" id="categoryChip">電流が流れる道筋</span></div><div class="stats"><span>問題<b id="qNum">1</b></span><span>連続正解<b id="streak">0</b></span><span id="timerWrap" class="chip timer-chip hidden">残り <b id="timerText">60</b>秒</span></div></div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="question-area"><div class="q-label">QUESTION <span id="qIndex">01</span></div><div class="question" id="question"></div><div class="hint" id="hint"></div></div>
+  <div class="answer-title" id="answerTitle">答えを入力</div>
+  <div id="textAnswer" class="answer-box"><input id="answerInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="答えを入力…"><button class="primary" id="checkBtn">決定</button></div>
+  <div id="choiceAnswer" class="choices hidden"></div>
+  <div id="feedback" class="feedback"></div>
+  <div class="actions"><button class="secondary" id="skipBtn">スキップ</button><span class="note" id="keyHelp">Enter：解答 / 次の問題　・　Backspace：1文字削除</span><button class="primary hidden" id="nextBtn">次の問題へ →</button></div>
+ </div>
+</section>
+<aside class="side">
+ <h3>⌗ 計算電卓</h3>
+ <div class="calc-layout">
+  <div>
+   <div class="calc-display"><div class="calc-expression" id="calcExpr">計算できます</div><div class="calc-value" id="calcValue">0</div></div>
+   <div class="keypad" id="keypad">
+    <button class="key" data-k="AC">AC</button><button class="key" data-k="(">(</button><button class="key" data-k=")">)</button><button class="key op" data-k="÷">÷</button>
+    <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button><button class="key op" data-k="×">×</button>
+    <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button><button class="key op" data-k="-">−</button>
+    <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button><button class="key op" data-k="+">+</button>
+    <button class="key wide" data-k="0">0</button><button class="key" data-k=".">.</button><button class="key equal" data-k="=">=</button>
+    <button class="key wide" data-k="DEL">⌫</button><button class="key wide" data-k="ANS">ANS</button>
+   </div>
+  </div>
+  <div>
+   <div class="side-stats">
+    <div class="mini-stat"><small>正解数</small><b id="correctCount">0</b></div>
+    <div class="mini-stat"><small>挑戦数</small><b id="totalCount">0</b></div>
+    <div class="mini-stat"><small>正答率</small><b id="accuracy">—</b></div>
+    <div class="mini-stat"><small>最高連続</small><b id="bestStreak">0</b></div>
+   </div>
+   <div class="calc-foot">電卓はマウス・タッチ・キーボードに対応。問題が切り替わると自動でACになります。</div>
+  </div>
+ </div>
+</aside>
+</div>
+</div>
+<div class="modal-bg" id="resultModal"><div class="modal"><div style="font-size:42px">🏁</div><h2>今回の結果</h2><p id="resultText"></p><button class="primary" id="againBtn">もう一度挑戦</button> <button class="secondary" id="homeBtn">難易度選択へ</button></div></div>
+<script>
+const bank={
+初級:[
+["電流が流れる道筋全体を何という？","回路","電流が流れる道すじ全体を回路という。","電流が流れる道筋",["回路","電圧","電力","抵抗"]],
+["電気器具などを導線でつないだ実際の様子を表した図は？","実体配線図","器具の形や導線のつなぎ方を実際に近い形で表す。","電流が流れる道筋",["実体配線図","回路図","電気用図記号","グラフ"]],
+["回路を記号で簡単に表した図を何という？","回路図","電気用図記号を使って回路を表したもの。","電流が流れる道筋",["回路図","実体配線図","地図","模式図"]],
+["電流の大きさを表す単位Aの読み方は？","アンペア","電流の単位はアンペア（A）。","電流が流れる道筋",["アンペア","ボルト","オーム","ワット"]],
+["1Aは何mA？","1000","1A＝1000mA。","電流が流れる道筋",["100","10","1000","0.1"]],
+["電流を測定する器具は？","電流計","電流計は回路に直列につなぐ。","電流が流れる道筋",["電流計","電圧計","抵抗器","検流計"]],
+["電流が分かれ道のない1本の道を流れる回路は？","直列回路","直列回路では電流の通り道が1本。","電流が流れる道筋",["直列回路","並列回路","開回路","短絡回路"]],
+["電流が枝分かれして流れる回路は？","並列回路","並列回路には電流の通り道が複数ある。","電流が流れる道筋",["並列回路","直列回路","開回路","単独回路"]],
+["電圧の単位Vの読み方は？","ボルト","電圧の単位はボルト（V）。","回路に加わる電圧",["ボルト","アンペア","オーム","ワット"]],
+["電圧を測定する器具は？","電圧計","電圧計は測定する部分に並列につなぐ。","回路に加わる電圧",["電圧計","電流計","電力計","抵抗計"]],
+["電気抵抗の単位Ωの読み方は？","オーム","抵抗の単位はオーム（Ω）。","電圧と電流の関係",["オーム","ボルト","アンペア","ジュール"]],
+["電流を通しやすい物質を何という？","導体","金属などは導体。","電気抵抗",["導体","不導体","絶縁体","半導体"]],
+["電流をほとんど通さない物質を何という？","不導体","絶縁体ともいう。","電気抵抗",["不導体","導体","電源","抵抗器"]],
+["ニクロムは電流を通しにくい金属線で、何に使われる？","電熱線","電熱線などに使われる。","電気抵抗",["電熱線","導線","電池","スイッチ"]],
+["電力の単位Wの読み方は？","ワット","電力の単位はワット（W）。","電流の働き",["ワット","ジュール","ボルト","アンペア"]],
+["熱量や電力量の単位Jの読み方は？","ジュール","ジュール（J）はエネルギーの単位。","電流の働き",["ジュール","ワット","オーム","ボルト"]],
+["電力に電流を流した時間をかけて求める量は？","電力量","電力量＝電力×時間。","電流の働き",["電力量","電圧","電気抵抗","電流"]],
+["電力1Wを1時間使ったときの電力量を何という単位で表す？","1Wh","Whはワット時。","電流の働き",["1Wh","1W","1J","1A"]]
+],
+中級:[
+["直列回路の各点を流れる電流の関係を式で表せ。","I₁=I₂=I₃","直列回路では回路のどこでも電流は等しい。","回路に流れる電流"],
+["並列回路で、枝分かれする前の電流Iと枝の電流I₁・I₂の関係は？","I=I₁+I₂","並列回路では全体の電流は枝の電流の和。","回路に流れる電流"],
+["直列回路で、全体の電圧Vと各部分の電圧の関係は？","V=V₁+V₂","直列回路では電圧が各部分に分かれる。","回路に加わる電圧"],
+["並列回路で、各枝に加わる電圧の関係は？","V=V₁=V₂","並列回路では各枝に加わる電圧は等しい。","回路に加わる電圧"],
+["電圧12V、抵抗4Ωのとき電流は何A？","3","I＝V/R＝12/4＝3A。","オームの法則","計算"],
+["電流0.5A、抵抗10Ωのとき電圧は何V？","5","V＝RI＝10×0.5＝5V。","オームの法則","計算"],
+["電圧6V、電流0.2Aのとき抵抗は何Ω？","30","R＝V/I＝6/0.2＝30Ω。","オームの法則","計算"],
+["抵抗3Ωと5Ωを直列につないだ。全体の抵抗は何Ω？","8","直列では抵抗を足す。3＋5＝8Ω。","電気抵抗","計算"],
+["抵抗6Ωと3Ωを並列につないだ。全体の抵抗は何Ω？","2","1/R＝1/6＋1/3＝3/6。よってR＝2Ω。","電気抵抗","計算"],
+["電圧10V、電流2Aのとき電力は何W？","20","P＝VI＝10×2＝20W。","電流の働き","計算"],
+["電力60Wの電気器具を10秒使った。電力量は何J？","600","電力量＝電力×時間＝60×10＝600J。","電流の働き","計算"],
+["電力100Wの器具を2時間使った。電力量は何Wh？","200","100W×2h＝200Wh。","電流の働き","計算"],
+["電力が同じとき、電流を流す時間が2倍になると電力量は何倍？","2倍","電力量は時間に比例する。","電流の働き",["2倍","4倍","半分","変わらない"]],
+["電流計は測定する部分に直列・並列のどちらにつなぐ？","直列","回路を流れる電流を測るため直列につなぐ。","電流が流れる道筋",["直列","並列"]],
+["電圧計は測定する部分に直列・並列のどちらにつなぐ？","並列","測定部分の両端の電圧を測るため並列につなぐ。","回路に加わる電圧",["直列","並列"]]
+],
+上級:[
+["電圧9Vの電源に、抵抗3Ωと6Ωを直列につないだ。回路全体の電流は何A？","1","全抵抗は3＋6＝9Ω。I＝9/9＝1A。","直列回路","計算"],
+["電圧12Vの電源に、抵抗6Ωと3Ωを並列につないだ。全体の電流は何A？","6","合成抵抗は2Ω。I＝12/2＝6A。","並列回路","計算"],
+["抵抗2Ωと4Ωを直列につなぎ、全体に12Vを加えた。4Ωに加わる電圧は何V？","8","全抵抗6Ω、電流2A。4Ωの電圧は4×2＝8V。","直列回路","計算"],
+["抵抗6Ωと3Ωを並列につなぎ、全体に6Vを加えた。6Ω側の電流は何A？","1","並列では枝の電圧も6V。I＝6/6＝1A。","並列回路","計算"],
+["抵抗4Ωに2Aの電流を5分間流した。発生する熱量は何J？","4800","電力＝I²R＝4×2²＝16W。5分＝300秒。熱量＝16×300＝4800J。","電流の働き","計算"],
+["電圧100V、電力500Wの器具に流れる電流は何A？","5","I＝P/V＝500/100＝5A。","電流の働き","計算"],
+["電圧6Vで電流0.3Aが流れる抵抗器を、同じ電圧のまま電流0.6Aにしたい。抵抗は何Ωにすればよい？","10","最初の抵抗は20Ω。電流を0.6AにするにはR＝6/0.6＝10Ω。","オームの法則","計算"],
+["抵抗6Ωを2個並列につないだとき、合成抵抗は何Ω？","3","同じ抵抗2個の並列なので半分の3Ω。","電気抵抗","計算"],
+["電力800Wの器具を30分使った。電力量は何Wh？","400","30分＝0.5時間。800×0.5＝400Wh。","電流の働き","計算"],
+["電力200Wの器具を15分使った。電力量は何J？","180000","15分＝900秒。200×900＝180000J。","電流の働き","計算"],
+["直列回路で抵抗が2倍になり、電圧が一定のままなら電流はどうなる？","半分","I＝V/Rより、抵抗が2倍なら電流は1/2。","オームの法則",["2倍","半分","4倍","変わらない"]],
+["並列回路に枝を1本追加したとき、回路全体の合成抵抗はどうなる？","小さくなる","電流の通り道が増えるため合成抵抗は小さくなる。","電気抵抗",["大きくなる","小さくなる","変わらない"]],
+["電圧が一定のとき、電流が3倍になると電力は何倍？","3倍","P＝VIでV一定ならPはIに比例する。","電流の働き",["3倍","6倍","9倍","1/3倍"]]
+],
+エキスパート:[
+["直列につないだ抵抗R₁=4Ω、R₂=8Ωに12Vを加えた。R₂に加わる電圧を数字と単位で答えよ。","8V","全抵抗12Ω、電流1A。R₂の電圧は8×1＝8V。","直列回路","記述"],
+["並列につないだ抵抗R₁=4Ω、R₂=12Ωに12Vを加えた。回路全体の電流を数字と単位で答えよ。","4A","枝の電流は3Aと1A。合計4A。","並列回路","記述"],
+["抵抗6Ωと12Ωを並列につないだ合成抵抗は何Ω？","4Ω","1/R＝1/6＋1/12＝3/12。R＝4Ω。","電気抵抗","記述"],
+["電圧24V、電流0.4Aの器具の抵抗は何Ω？","60Ω","R＝V/I＝24/0.4＝60Ω。","オームの法則","記述"],
+["電力1.2kWの器具を30分使った電力量は何kWh？","0.6kWh","30分＝0.5時間。1.2×0.5＝0.6kWh。","電流の働き","記述"],
+["電圧100V、抵抗20Ωの器具を3分間使った。発生する熱量は何J？","90000J","電流5A、電力500W。3分＝180秒。500×180＝90000J。","電流の働き","記述"],
+["電流0.25AをmAで表せ。","250mA","1A＝1000mAなので0.25×1000＝250mA。","単位変換","記述"],
+["電力1500WをkWで表せ。","1.5kW","1000W＝1kW。1500W＝1.5kW。","単位変換","記述"],
+["直列回路と並列回路で、電流が等しくなるのはどちら？","直列回路","直列回路では回路のどの場所でも電流が等しい。","回路の性質","記述"],
+["直列回路と並列回路で、各部分の電圧が等しくなるのはどちら？","並列回路","並列回路では各枝に加わる電圧が等しい。","回路の性質","記述"],
+["並列回路の合成抵抗を求める式を答えよ（R₁とR₂）。","1/R=1/R₁+1/R₂","逆数の和を使う。最後に逆数に戻す。","公式","記述"],
+["電圧が2倍、抵抗も2倍になった。電流は何倍になる？","変わらない","I＝V/R。分子と分母が同じ倍率なので電流は変わらない。","オームの法則",["2倍","半分","変わらない","4倍"]]
+]
+};
+let selectedType="基礎問題",selectedDifficulty="ノーマル",selectedMode="ノーマル",selectedCount="10";
+let questions=[],index=0,correct=0,total=0,streak=0,best=0,locked=false,calcExpr="",calcAns=0,timerId=null,timeLeft=60;
+const $=id=>document.getElementById(id);
+function bindOptions(id,attr,setter){document.querySelectorAll("#"+id+" .option-btn").forEach(b=>b.addEventListener("click",()=>{setter(b.dataset[attr]);document.querySelectorAll("#"+id+" .option-btn").forEach(x=>x.classList.toggle("active",x===b));if(id==="modeSelect")$("modeHelp").textContent=selectedMode==="ノーマル"?"自分のペースで全問に挑戦。":selectedMode==="サバイバル"?"不正解またはスキップで終了。":"制限時間60秒。できるだけ多く正解しよう。"}))}
+bindOptions("typeSelect","type",v=>selectedType=v);bindOptions("difficultySelect","difficulty",v=>selectedDifficulty=v);bindOptions("modeSelect","mode",v=>selectedMode=v);bindOptions("countSelect","count",v=>selectedCount=v);
+$("startBtn").onclick=startGame;
+function isCalcQuestion(q){return q[4]==="計算" || (q[4]==="記述" && /何[ＡAＶVＷWＪJΩ]|何kWh|何mA|何Ω|何V|何A|何W|何J|電力量は|熱量は|抵抗は何|電流は何|電圧は何/.test(q[0]));}
+function sourceLevel(q){for(const [lv,arr] of Object.entries(bank)){if(arr.includes(q))return lv;}return "初級";}
+function isImportant(q){
+ const t=q[0]+" "+q[1];
+ return /直列回路の各点|枝分かれする前の電流|全体の電流I|全体の電圧V|各枝に加わる電圧|電流計は|電圧計は|電流の大きさを表す単位|電圧の単位|電気抵抗の単位|電流を通しやすい|電流をほとんど通さない|電圧.*抵抗.*電流|オームの法則|電流が流れる道筋全体|電気器具などを導線|回路を記号で/.test(t);
+}
+function makePool(){
+ let all=Object.values(bank).flat(), pool=all.filter(q=>{
+  const calc=isCalcQuestion(q), lv=sourceLevel(q);
+  if(selectedType==="基礎問題")return !calc && (lv==="初級"||lv==="中級");
+  if(selectedType==="応用問題")return !calc && (lv==="上級"||lv==="エキスパート");
+  if(selectedType==="両方")return !calc;
+  if(selectedType==="計算")return calc;
+  if(selectedType==="重要")return !calc && isImportant(q);
+  return false;
+ });
+return pool;
+}
+
+function isRelationFormula(q){
+ const answer=String(q[1]??"");
+ return answer.includes("=") && /[A-Za-zＩＩⅠⅡⅢ₁₂₃]/.test(answer);
+}
+
+function buildChoices(q){
+ const all=Object.values(bank).flat();
+ const answer=String(q[1]);
+ const authored=Array.isArray(q[4])?q[4].map(String):[];
+ const related=all.filter(x=>x!==q && x[1]!==q[1] && x[2]===q[2]).map(x=>String(x[1]));
+ const others=all.filter(x=>x!==q && x[1]!==q[1]).map(x=>String(x[1]));
+ const candidates=[...new Set([...authored,...related,...others])].filter(x=>x!==answer);
+ candidates.sort((a,b)=>{
+  const numeric=/^[0-9０-９.．]+$/.test(answer);
+  const score=x=>(/^[0-9０-９.．]+$/.test(x)===numeric?0:1)*10+Math.abs(x.length-answer.length);
+  return score(a)-score(b);
+ });
+ const choices=[answer,...candidates.slice(0,3)];
+ for(const v of ["電流","電圧","電力","電力量","抵抗","回路","直列回路","並列回路","ワット","ボルト"]){
+  if(choices.length===4)break;
+  if(!choices.includes(v))choices.push(v);
+ }
+ return choices.sort(()=>Math.random()-.5);
+}
+
+function startGame(){
+ let pool=makePool();
+ if(!pool.length){alert("この条件に合う問題がありません。難易度をノーマルにするか、問題の種類を変更してください。");return}
+ pool.sort(()=>Math.random()-.5);
+ const limit=selectedCount==="all"?pool.length:Math.min(Number(selectedCount),pool.length);
+ questions=pool.slice(0,limit);index=0;correct=0;total=0;streak=0;best=0;timeLeft=60;
+ $("startScreen").classList.add("hidden");$("gameScreen").classList.remove("hidden");
+ $("levelChip").textContent=selectedType+" ・ "+selectedDifficulty;
+ $("timerWrap").classList.toggle("hidden",selectedMode!=="タイムアタック");
+ if(timerId)clearInterval(timerId);
+ if(selectedMode==="タイムアタック"){updateTimer();timerId=setInterval(()=>{timeLeft--;updateTimer();if(timeLeft<=0)finish(true)},1000)}
+ updateStats();loadQuestion()
+}
+function updateTimer(){$("timerText").textContent=timeLeft;$("timerWrap").classList.toggle("urgent",timeLeft<=10)}
+function loadQuestion(){if(index>=questions.length){finish();return}locked=false;const q=questions[index];$("categoryChip").textContent=q[2];$("qNum").textContent=index+1+" / "+questions.length;$("qIndex").textContent=String(index+1).padStart(2,"0");$("progressBar").style.width=(index/questions.length*100)+"%";$("question").textContent=q[0];$("hint").textContent=selectedDifficulty==="ハード"?"":(isCalcQuestion(q)?"必要なら右側の電卓を使おう。単位も確認しよう。":"");$("feedback").className="feedback";$("feedback").innerHTML="";$("nextBtn").classList.add("hidden");$("checkBtn").classList.remove("hidden");$("skipBtn").disabled=false;$("answerInput").value="";$("calcExpr").textContent="計算できます";$("calcValue").textContent="0";calcExpr="";calcAns=0;
+if(selectedDifficulty==="ノーマル"||isRelationFormula(q)){
+ $("textAnswer").classList.add("hidden");
+ $("choiceAnswer").classList.remove("hidden");
+ $("answerTitle").textContent=isRelationFormula(q)?"関係式を4択から選択":"正しいものを4択から選択";
+ $("choiceAnswer").innerHTML="";
+ buildChoices(q).forEach(v=>{
+  let b=document.createElement("button");
+  b.className="choice";b.textContent=v;b.onclick=()=>checkAnswer(v);
+  $("choiceAnswer").appendChild(b);
+ });
+}else{
+ $("textAnswer").classList.remove("hidden");
+ $("choiceAnswer").classList.add("hidden");
+ $("answerTitle").textContent="答えを入力";
+ $("answerInput").placeholder="自分で答えを入力…";
+ setTimeout(()=>$("answerInput").focus(),40);
+}
+}
+function norm(s){return String(s).toLowerCase().replace(/\s/g,"").replace(/[Ａ-Ｚａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/アンペア/g,"").replace(/ボルト/g,"").replace(/オーム/g,"").replace(/ワット/g,"").replace(/ジュール/g,"").replace(/Ω|Ω/g,"").replace(/a$/,"").replace(/v$/,"").replace(/w$/,"").replace(/j$/,"")}
+function isCorrect(got,ans){let a=norm(ans),g=norm(got);if(g===a)return true;const numA=parseFloat(a),numG=parseFloat(g);if(selectedDifficulty!=="ハード"&&Number.isFinite(numA)&&Number.isFinite(numG)&&Math.abs(numA-numG)<1e-8)return true;return false}
+function checkAnswer(value){if(locked)return;const q=questions[index],got=value??$("answerInput").value.trim();if(!got)return;locked=true;total++;let ok=isCorrect(got,q[1]);if(ok){correct++;streak++;best=Math.max(best,streak)}else streak=0;updateStats();$("feedback").className="feedback show "+(ok?"ok":"ng");$("feedback").innerHTML=`<strong>${ok?"✓ 正解！":"✕ 不正解"}</strong>${ok?"":"正解："+q[1]+"<br>"}${q[3]}`;$("checkBtn").classList.add("hidden");$("nextBtn").classList.remove("hidden");$("skipBtn").disabled=true;$("progressBar").style.width=((index+1)/questions.length*100)+"%";
+if(!ok&&selectedMode==="サバイバル"){$("nextBtn").textContent="結果を見る →";$("nextBtn").onclick=()=>finish();}else{$("nextBtn").textContent="次の問題へ →";$("nextBtn").onclick=nextQuestion;}
+$("nextBtn").focus()}
+$("checkBtn").onclick=()=>checkAnswer();$("answerInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();if(!locked)checkAnswer();else nextQuestion()}});
+$("nextBtn").onclick=nextQuestion;function nextQuestion(){if(!locked)return;index++;if(index>=questions.length){finish();return}loadQuestion();$("nextBtn").textContent="次の問題へ →";$("nextBtn").onclick=nextQuestion}
+$("skipBtn").onclick=()=>{if(locked)return;total++;streak=0;updateStats();locked=true;$("feedback").className="feedback show ng";$("feedback").innerHTML="<strong>スキップ</strong>正解："+questions[index][1]+"<br>"+questions[index][3];$("checkBtn").classList.add("hidden");$("nextBtn").classList.remove("hidden");$("skipBtn").disabled=true;if(selectedMode==="サバイバル"){$("nextBtn").textContent="結果を見る →";$("nextBtn").onclick=()=>finish()}else{$("nextBtn").textContent="次の問題へ →";$("nextBtn").onclick=nextQuestion}}
+function updateStats(){$("correctCount").textContent=correct;$("totalCount").textContent=total;$("accuracy").textContent=total?Math.round(correct/total*100)+"%":"—";$("streak").textContent=streak;$("bestStreak").textContent=best}
+function finish(){if(timerId){clearInterval(timerId);timerId=null} $("timerWrap").classList.add("hidden");$("resultText").textContent=`${questions.length}問中 ${correct}問正解！ 正答率 ${Math.round(correct/questions.length*100)}%。最高連続正解は${best}問！`;$("resultModal").classList.add("show")}
+$("againBtn").onclick=()=>{$("resultModal").classList.remove("show");startGame()};$("homeBtn").onclick=()=>{$("resultModal").classList.remove("show");$("gameScreen").classList.add("hidden");$("startScreen").classList.remove("hidden")};
+function calcRender(){$("calcExpr").textContent=calcExpr||"計算できます";$("calcValue").textContent=calcExpr||"0"}
+function calcPress(k){if(k==="AC"){calcExpr="";calcAns=0;calcRender();return}if(k==="DEL"){calcExpr=calcExpr.slice(0,-1);calcRender();return}if(k==="ANS"){calcExpr+=String(calcAns);calcRender();return}if(k==="="){try{let safe=calcExpr.replace(/×/g,"*").replace(/÷/g,"/");if(!/^[0-9+\-*/(). ]+$/.test(safe))throw 0;let v=Function('"use strict";return ('+safe+')')();if(!Number.isFinite(v))throw 0;calcAns=Number(v.toPrecision(10));$("calcExpr").textContent=calcExpr+" =";$("calcValue").textContent=calcAns;calcExpr=String(calcAns)}catch{$("calcValue").textContent="Error"}return}calcExpr+=k;calcRender()}
+$("keypad").addEventListener("click",e=>{let b=e.target.closest("button[data-k]");if(b)calcPress(b.dataset.k)});
+document.addEventListener("keydown",e=>{if(e.target===$("answerInput")){if(e.key==="Backspace")return;return}if(e.key==="Enter"){if(!$("gameScreen").classList.contains("hidden")){if(locked)nextQuestion();else if(document.activeElement!==$("answerInput"))$("answerInput").focus()}return}if(e.key==="Backspace"){calcPress("DEL");return}if(/^[0-9.+\-*/()]$/.test(e.key)){calcPress(e.key==="*"?"×":e.key==="/ "?"÷":e.key);return}if(e.key==="Escape")calcPress("AC")});
+</script>
+</body>
+</html>
